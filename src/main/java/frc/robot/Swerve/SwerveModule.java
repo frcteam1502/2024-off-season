@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.Swerve;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
@@ -11,7 +11,39 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import frc.robot.SwerveConstants;
+
+final class ModuleConstants {
+ 
+  // kinematics
+  public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
+  public static final double DRIVE_GEAR_RATIO = 1 / ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0));
+  public static final double STEER_GEAR_RATIO = 1 / ((14.0 / 50.0) * (10.0 / 60.0));
+  public static final double DRIVE_METERS_PER_ENCODER_REV = (WHEEL_DIAMETER_METERS * Math.PI) / DRIVE_GEAR_RATIO;
+  public static final double DRIVE_ENCODER_MPS_PER_REV = DRIVE_METERS_PER_ENCODER_REV / 60; 
+  
+  // max turn speed = (5400/ 21.43) revs per min 240 revs per min 4250 deg per min
+  public static final double MODULE_TURN_PID_CONTROLLER_P = 3.4;
+  public static final double MODULE_TURN_PID_CONTROLLER_I = 0;
+  public static final double MODULE_TURN_PID_CONTROLLER_D = 0;
+  
+  // public static final double MODULE_TURN_PID_CONTROLLER_F = 0;
+  public static final double MODULE_DRIVE_PID_CONTROLLER_P = .08;
+  public static final double MODULE_DRIVE_PID_CONTROLLER_I = 0;
+  public static final double MODULE_DRIVE_PID_CONTROLLER_D = 0;
+  public static final double MODULE_DRIVE_PID_CONTROLLER_F = 1.0;
+  
+  public static final double CLOSED_LOOP_RAMP_RATE = .25;
+  public static final int SMART_CURRENT_LIMIT = 40;
+
+  /*
+  public static final double MAX_METERS_PER_SECOND = 4.4; //5600 * DRIVE_ENCODER_MPS_PER_REV;
+  public static final double TURNING_DEGREES_PER_ENCODER_REV = 360 / STEER_GEAR_RATIO;
+  public static final double RADIANS_PER_ENCODER_REV = TURNING_DEGREES_PER_ENCODER_REV * (Math.PI/180);
+  public static final double MAX_MODULE_ROTATION_RADIANS_PER_SECOND = Math.PI/2;
+  public static final double MAX_MODULE_ROTATION_RADIANS_PER_SECOND_PER_SECOND = Math.PI;
+  */
+}
+
 
 public class SwerveModule {
   private final CANSparkMax driveMotor;
@@ -22,23 +54,23 @@ public class SwerveModule {
   private final CANCoder absEncoder;
 
   private final SparkMaxPIDController drivePIDController;
-  private final PIDController turningPIDController = new PIDController(SwerveConstants.ModuleConstants.MODULE_TURN_PID_CONTROLLER_P, SwerveConstants.ModuleConstants.MODULE_TURN_PID_CONTROLLER_I, SwerveConstants.ModuleConstants.MODULE_TURN_PID_CONTROLLER_D);
+  private final PIDController turningPIDController = new PIDController(ModuleConstants.MODULE_TURN_PID_CONTROLLER_P, ModuleConstants.MODULE_TURN_PID_CONTROLLER_I, ModuleConstants.MODULE_TURN_PID_CONTROLLER_D);
 
   public SwerveModule(CANSparkMax driveMotor, CANSparkMax turnMotor, CANCoder absEncoder, double absOffset, boolean CANCoderDirection) {
     this.driveMotor = driveMotor;
     this.turningMotor = turnMotor;
     this.absEncoder = absEncoder;
 
-    driveMotor.setClosedLoopRampRate(SwerveConstants.ModuleConstants.CLOSED_LOOP_RAMP_RATE);
-    driveMotor.setSmartCurrentLimit(SwerveConstants.ModuleConstants.SMART_CURRENT_LIMIT);
+    driveMotor.setClosedLoopRampRate(ModuleConstants.CLOSED_LOOP_RAMP_RATE);
+    driveMotor.setSmartCurrentLimit(ModuleConstants.SMART_CURRENT_LIMIT);
 
     driveEncoder = driveMotor.getEncoder();
 
     // Set the distance per pulse for the drive encoder. 
-    driveEncoder.setPositionConversionFactor(SwerveConstants.ModuleConstants.DRIVE_METERS_PER_ENCODER_REV);
+    driveEncoder.setPositionConversionFactor(ModuleConstants.DRIVE_METERS_PER_ENCODER_REV);
 
     // Set the velocity per pulse for the drive encoder
-    driveEncoder.setVelocityConversionFactor(SwerveConstants.ModuleConstants.DRIVE_ENCODER_MPS_PER_REV);
+    driveEncoder.setVelocityConversionFactor(ModuleConstants.DRIVE_ENCODER_MPS_PER_REV);
 
     // Set the angle in radians per pulse for the turning encoder.
     //turningEncoder.setPositionConversionFactor(Constants.ModuleConstants.RADIANS_PER_ENCODER_REV);
@@ -50,10 +82,10 @@ public class SwerveModule {
     this.turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
     this.drivePIDController = this.driveMotor.getPIDController();
-    this.drivePIDController.setP(SwerveConstants.ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_P);
-    this.drivePIDController.setI(SwerveConstants.ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_I);
-    this.drivePIDController.setD(SwerveConstants.ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_D);
-    this.drivePIDController.setFF(SwerveConstants.ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_F);
+    this.drivePIDController.setP(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_P);
+    this.drivePIDController.setI(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_I);
+    this.drivePIDController.setD(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_D);
+    this.drivePIDController.setFF(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_F);
   }
 
   /**
