@@ -26,9 +26,9 @@ public class ControllerCommands extends CommandBase {
   @Override
   public void execute() {
     var speedCommand = speedController.GetSpeedCommand(
-      Driver.Controller.getLeftY(), // Forward
-      Driver.Controller.getLeftX(), // Strafe
-      Driver.Controller.getRightX(), // Rotate
+      Driver.getLeftY(), // Forward
+      Driver.getLeftX(), // Strafe
+      Driver.getRightX(), // Rotate
       Driver.XboxButtons.LeftBumper.getAsBoolean()); // brake
   
     drive.drive(-speedCommand.forwardSpeed, -speedCommand.strafeSpeed, -speedCommand.rotationSpeed, true);
