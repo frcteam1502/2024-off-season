@@ -1,11 +1,9 @@
 package frc.robot.subsystems;
 
-
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.Pigeon2;
+
 import com.revrobotics.CANSparkMax;
-
-
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -19,115 +17,101 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.GameState;
 import frc.robot.Swerve.SwerveModule;
 
-// -- path planner and limelight --
-// import java.util.HashMap;
-// import java.util.List;
-// import com.pathplanner.lib.PathConstraints;
-// import com.pathplanner.lib.PathPlanner;
-// import com.pathplanner.lib.PathPlannerTrajectory;
-// import com.pathplanner.lib.PathPoint;
-// import com.pathplanner.lib.auto.PIDConstants;
-// import com.pathplanner.lib.auto.SwerveAutoBuilder;
-// import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-// import edu.wpi.first.math.controller.PIDController;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import frc.robot.libraries.LimelightHelpers;
-
 final class Gyro {
-  public static final Pigeon2 gyro = new Pigeon2(14);
+  public static final Pigeon2 gyro = new Pigeon2(1);
+  public static final boolean GYRO_REVERSED = true;
 }
 
 final class CANCoders {
   //Front Left CANCoder
-  public static final CANCoder FRONT_LEFT_CAN_CODER = new CANCoder(12);
+  public static final CANCoder FRONT_LEFT_CAN_CODER = new CANCoder(16);
   public static final boolean FRONT_LEFT_CAN_CODER_DIRECTION = false;
-  public static final double FRONT_LEFT_CAN_CODER_OFFSET = 111.4;
+  public static final double FRONT_LEFT_CAN_CODER_OFFSET = 241.348 - 180.0;
 
   //Front Right CANCoder
-  public static final CANCoder FRONT_RIGHT_CAN_CODER = new CANCoder(13);
+  public static final CANCoder FRONT_RIGHT_CAN_CODER = new CANCoder(10);
   public static final boolean FRONT_RIGHT_CAN_CODER_DIRECTION = false;
-  public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 104.0;
+  public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 29.883;
 
   //Back Left CANCoder
-  public static final CANCoder BACK_LEFT_CAN_CODER = new CANCoder(11);
+  public static final CANCoder BACK_LEFT_CAN_CODER = new CANCoder(4);
   public static final boolean BACK_LEFT_CAN_CODER_DIRECTION = false;
-  public static final double BACK_LEFT_CAN_CODER_OFFSET = 15.0;
+  public static final double BACK_LEFT_CAN_CODER_OFFSET = 95.977 - 180;
 
   //Back Right CANCoder
-  public static final CANCoder BACK_RIGHT_CAN_CODER = new CANCoder(10);
+  public static final CANCoder BACK_RIGHT_CAN_CODER = new CANCoder(8);
   public static final boolean BACK_RIGHT_CAN_CODER_DIRECTION = false;
-  public static final double BACK_RIGHT_CAN_CODER_OFFSET = 91.4; 
-  
+  public static final double BACK_RIGHT_CAN_CODER_OFFSET = 36.562;
 }
 
 final class DriveConstants {
   public static final double MAX_SPEED_METERS_PER_SECOND = 1.2; //IF YOU UP THE SPEED CHANGE ACCELERATION
-  
+
   //Turning Motors
   public static final boolean FrontLeftTurningMotorReversed = true;
   public static final boolean BackLeftTurningMotorReversed = true;
   public static final boolean FrontRightTurningMotorReversed = true;
   public static final boolean BackRightTurningMotorReversed = true;
-  
+
   public static final CANSparkMax.IdleMode FrontLeftTurningMotorBrake = IdleMode.kCoast;
   public static final CANSparkMax.IdleMode BackLeftTurningMotorBrake = IdleMode.kCoast;
   public static final CANSparkMax.IdleMode FrontRightTurningMotorBrake = IdleMode.kCoast;
   public static final CANSparkMax.IdleMode BackRightTurningMotorBrake = IdleMode.kCoast;
-  
+
   //Drive Motors
   public static final boolean FrontLeftDriveMotorReversed = false;
   public static final boolean BackLeftDriveMotorReversed = false;
   public static final boolean FrontRightDriveMotorReversed = false;
   public static final boolean BackRightDriveMotorReversed = false;
-  
+
   public static final CANSparkMax.IdleMode FrontLeftDriveMotorBrake = IdleMode.kBrake;
   public static final CANSparkMax.IdleMode BackLeftDriveMotorBrake = IdleMode.kBrake;
   public static final CANSparkMax.IdleMode FrontRightDriveMotorBrake = IdleMode.kBrake;
   public static final CANSparkMax.IdleMode BackRightDriveMotorBrake = IdleMode.kBrake;
-  
+
   //Wheel Base
-  public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(25);
-  public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(32);
-  
-  public static final boolean GYRO_REVERSED = true;
-  
+  public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
+  public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(23.25);
+
+
   public static final Translation2d FRONT_LEFT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
   public static final Translation2d FRONT_RIGHT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, -WHEEL_BASE_WIDTH/2);
   public static final Translation2d BACK_LEFT_MODULE = new Translation2d(-WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
   public static final Translation2d BACK_RIGHT_MODULE = new Translation2d(-WHEEL_BASE_LENGTH/2, -WHEEL_BASE_WIDTH/2);
-  
+
   public static final SwerveDriveKinematics KINEMATICS =
   new SwerveDriveKinematics(
-    FRONT_LEFT_MODULE, 
-    FRONT_RIGHT_MODULE, 
-    BACK_LEFT_MODULE, 
+    FRONT_LEFT_MODULE,
+    FRONT_RIGHT_MODULE,
+    BACK_LEFT_MODULE,
     BACK_RIGHT_MODULE
     );
-    
+
     /*
-      
       public static final double MAX_ROTATION_RADIANS_PER_SECOND = (Math.PI/2);
       public static final double MAX_ROTATION_RADIANS_PER_SECOND_PER_SECOND = Math.PI;
       */
-      
-  public static final double GO_STRAIGHT_GAIN = 0.02;
+
+      public static final double GO_STRAIGHT_GAIN = 0.02;
 }
 
 
 final class Motors {
   //drive
-  public static final CANSparkMax DRIVE_FRONT_LEFT = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_FRONT_RIGHT = new CANSparkMax(8, CANSparkMaxLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_BACK_LEFT = new CANSparkMax(4, CANSparkMaxLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_BACK_RIGHT = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
+  public static final CANSparkMax DRIVE_FRONT_LEFT = new CANSparkMax(15, CANSparkMaxLowLevel.MotorType.kBrushless);
+  public static final CANSparkMax DRIVE_FRONT_RIGHT = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
+  public static final CANSparkMax DRIVE_BACK_LEFT = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
+  public static final CANSparkMax DRIVE_BACK_RIGHT = new CANSparkMax(9, CANSparkMaxLowLevel.MotorType.kBrushless);
   
   //turn
-  public static final CANSparkMax ANGLE_FRONT_LEFT = new CANSparkMax(5, CANSparkMaxLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax ANGLE_FRONT_RIGHT = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax ANGLE_BACK_LEFT = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax ANGLE_BACK_RIGHT = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+  public static final CANSparkMax ANGLE_FRONT_LEFT = new CANSparkMax(16, CANSparkMaxLowLevel.MotorType.kBrushless);
+  public static final CANSparkMax ANGLE_FRONT_RIGHT = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
+  public static final CANSparkMax ANGLE_BACK_LEFT = new CANSparkMax(4, CANSparkMaxLowLevel.MotorType.kBrushless);
+  public static final CANSparkMax ANGLE_BACK_RIGHT = new CANSparkMax(8, CANSparkMaxLowLevel.MotorType.kBrushless);
 }
 
 
@@ -183,43 +167,51 @@ public class DriveSubsystem extends SubsystemBase{
     pitchOffset = gyro.getRoll();
 
     reset();
-
     ConfigMotorDirections();
   }
 
+  private void checkInitialAngle() {
+    if (GameState.isTeleop() && GameState.isFirst()) {
+      targetAngle = gyro.getYaw();
+    }
+  }
+  
   @Override
   public void periodic() {
+    checkInitialAngle();
     updateOdometry();
   }
-
+  
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    if(isTeleOp) {
-      if(Math.abs(rot) > 0){
+    checkInitialAngle();
+
+    if (GameState.isTeleop()) {
+      if (Math.abs(rot) > 0) {
         isTurning = true;
         targetAngle = gyro.getYaw();
       } 
-      else if(rot == 0 && isTurning) isTurning = false;
+      else if (rot == 0 && isTurning) {
+        isTurning = false;
+      }
 
-      if(isTurning) turnCommand = rot;
-      else turnCommand = (targetAngle - gyro.getYaw()) * DriveConstants.GO_STRAIGHT_GAIN;
+      if (isTurning) {
+        turnCommand = rot;
+      }
+      else { 
+        turnCommand = (targetAngle - gyro.getYaw()) * DriveConstants.GO_STRAIGHT_GAIN;
+      }
 
       forwardCommand = xSpeed;
       strafeCommand = ySpeed;
     }
-    
 
-    var swerveModuleStates =
-        kinematics.toSwerveModuleStates(
-            fieldRelative
+    var swerveModuleStates = kinematics.toSwerveModuleStates(fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnCommand, getGyroRotation2d())
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
+    
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
   
     setDesiredState(swerveModuleStates);
-  }
-
-  public void teleopInit() {
-    targetAngle = gyro.getYaw();
   }
 
   public void setDesiredState(SwerveModuleState[] swerveModuleStates) {
@@ -239,6 +231,7 @@ public class DriveSubsystem extends SubsystemBase{
           backRight.getPosition()
         });
   }
+
 
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
@@ -332,75 +325,5 @@ public class DriveSubsystem extends SubsystemBase{
     Motors.ANGLE_BACK_LEFT.setIdleMode(DriveConstants.BackLeftTurningMotorBrake);
     Motors.ANGLE_BACK_RIGHT.setIdleMode(DriveConstants.BackRightTurningMotorBrake);
   }
-/* 
-  public Command moveToImage() {
-    PathPlannerTrajectory toImage = PathPlanner.generatePath(
-      new PathConstraints(SwerveConstants.DriveConstants.MAX_SPEED_METERS_PER_SECOND * 3, 1), 
-      new PathPoint(new Translation2d(0, 0), getHeading(), getGyroRotation2d(), getVelocity()),
-      pointFromLimelight(new Translation2d(Limelight.getTargetPose()[0], Limelight.getTargetPose()[1])) 
-    );
-    
-    return new PPSwerveControllerCommand(
-      toImage, 
-      this::getPose2d, // Pose supplier
-      SwerveConstants.DriveConstants.KINEMATICS, // SwerveDriveKinematics
-      new PIDController(4.35, 0.0, 0.09), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-      new PIDController(4.35, 0.0, 0.09), // Y controller (usually the same values as X controller)
-      new PIDController(1.3, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-      this::setDesiredState, // Module states consumer
-      true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-      this // Requires this drive subsystem
-    );
-  }
 
-  public PathPoint pointFromLimelight(Translation2d imagePose) {
-    double xDistanceFromCenter = 0;
-    double yDistanceFromCenter = 0;
-    double desiredDistanceFromImage = 0;
-
-    if(Limelight.getPipeline() == 0) desiredDistanceFromImage = 1;
-    else if(Limelight.getPipeline() == 1) desiredDistanceFromImage = 2;
-
-    Translation2d goalTranslation = new Translation2d(
-      imagePose.getX() - xDistanceFromCenter, 
-      imagePose.getY() - yDistanceFromCenter - desiredDistanceFromImage);
-    return new PathPoint(goalTranslation, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), 0);
-  }
-
-  public void strafe(boolean right) {
-    if(!LimelightHelpers.getTV("Limelight")) {
-      double strafe = .1;
-      if(!right) strafe *= -1;
-      drive(0, strafe, 0, true);
-    }
-    else moveToImage();
-  }
-
-  public void strafeRight() {
-    strafe(true);
-  }
-
-  public void strafeLeft() {
-    strafe(false);
-  }
-  public Command buildAuto(HashMap<String, Command> eventMap, String pathName) {
-    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup(
-      pathName, 
-      new PathConstraints(SwerveConstants.DriveConstants.MAX_SPEED_METERS_PER_SECOND / 1.1, 1));
-
-    SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-      this::getPose2d, // Pose2d supplier
-      this::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
-      SwerveConstants.DriveConstants.KINEMATICS, // SwerveDriveKinematics
-      new PIDConstants(4.35, 0.0, 0.09), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-      new PIDConstants(2.55, 0.0, 0.15), // PID constants to correct for rotation error (used to create the rotation controller)
-      this::setDesiredState, // Module states consumer used to output to the drive subsystem
-      eventMap,
-      true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-      this // The drive subsystem. Used to properly set the requirements of path following commands
-    );
-    
-    return autoBuilder.fullAuto(pathGroup);
-  }
-*/
 }
