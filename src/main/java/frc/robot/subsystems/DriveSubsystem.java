@@ -22,7 +22,7 @@ import frc.robot.GameState;
 import frc.robot.Swerve.SwerveModule;
 
 final class Gyro {
-  public static final Pigeon2 gyro = new Pigeon2(1);
+  public static final Pigeon2 gyro = new Pigeon2(14);
   public static final boolean GYRO_REVERSED = true;
 }
 
