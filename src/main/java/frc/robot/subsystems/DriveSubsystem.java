@@ -49,7 +49,7 @@ final class CANCoders {
 }
 
 final class DriveConstants {
-  public static final double MAX_SPEED_METERS_PER_SECOND = 1.2; //IF YOU UP THE SPEED CHANGE ACCELERATION
+  public static final double MAX_SPEED_METERS_PER_SECOND = 4.6; //IF YOU UP THE SPEED CHANGE ACCELERATION
 
   //Turning Motors
   public static final boolean FrontLeftTurningMotorReversed = true;

@@ -7,7 +7,8 @@ import frc.robot.PowerManagement.IBrownOutDetector;
 import frc.robot.subsystems.DriveSubsystem;
 
 final class DriveConstants {
-  public static final double MAX_SPEED_METERS_PER_SECOND = 1.2; //IF YOU UP THE SPEED CHANGE ACCELERATION
+  public static final double MAX_TELEOP_SPEED = .75; //Range 0 to 1
+  public static final double MAX_FINESSE_SPEED = .3;
 }
 
 public class ControllerCommands extends CommandBase {
@@ -16,7 +17,7 @@ public class ControllerCommands extends CommandBase {
   
   public ControllerCommands(DriveSubsystem drive, IBrownOutDetector brownOutDetector) {
     this.drive = drive;
-    this.speedController = new AdaptiveSpeedController(brownOutDetector, 3.0, 0.3, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
+    this.speedController = new AdaptiveSpeedController(brownOutDetector, 3.0, DriveConstants.MAX_FINESSE_SPEED, DriveConstants.MAX_TELEOP_SPEED);
     addRequirements(drive);
   }
 
