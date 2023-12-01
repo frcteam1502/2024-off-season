@@ -184,6 +184,7 @@ public class DriveSubsystem extends SubsystemBase{
   
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     checkInitialAngle();
+    ChassisSpeeds speedCommands = new ChassisSpeeds(0, 0, 0);
 
     if (GameState.isTeleop()) {
       if (Math.abs(rot) > 0) {
@@ -205,10 +206,20 @@ public class DriveSubsystem extends SubsystemBase{
       strafeCommand = ySpeed;
     }
 
-    var swerveModuleStates = kinematics.toSwerveModuleStates(fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnCommand, getGyroRotation2d())
-                : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    
+    if(fieldRelative){
+      speedCommands = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnCommand, getGyroRotation2d());
+    } else {
+      speedCommands.omegaRadiansPerSecond = turnCommand;
+      speedCommands.vxMetersPerSecond = xSpeed;
+      speedCommands.vyMetersPerSecond = ySpeed;
+    }
+
+    driveRobotRelative(speedCommands);
+  }
+
+  // Feed into PathPlanner
+  public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
+    var swerveModuleStates = kinematics.toSwerveModuleStates(robotRelativeSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
   
     setDesiredState(swerveModuleStates);
