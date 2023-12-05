@@ -217,12 +217,19 @@ public class DriveSubsystem extends SubsystemBase{
     driveRobotRelative(speedCommands);
   }
 
-  // Feed into PathPlanner
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
+    //This method is a consumer of ChassisSpeed and sets the corresponding module states.  This is required for PathPlanner 2024
+    //Convert from robot frame of reference (ChassisSpeeds) to swerve module frame of reference (SwerveModuleState)
     var swerveModuleStates = kinematics.toSwerveModuleStates(robotRelativeSpeeds);
+    //Normalize wheel speed commands to make sure no speed is greater than the maximum achievable wheel speed.
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
-  
+    //Set the speed and angle of each module
     setDesiredState(swerveModuleStates);
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds(){
+    //This method is a supplier of ChassisSpeeds as determined by the module states.  This is required for PathPlanner 2024
+    return kinematics.toChassisSpeeds(getModuleStates());
   }
 
   public void setDesiredState(SwerveModuleState[] swerveModuleStates) {
@@ -230,6 +237,14 @@ public class DriveSubsystem extends SubsystemBase{
     frontRight.setDesiredState(swerveModuleStates[1]);
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
+  }
+
+  public SwerveModuleState[] getModuleStates(){
+    return new SwerveModuleState[] {
+      frontLeft.getState(),
+      frontRight.getState(),
+      backLeft.getState(),
+      backRight.getState()};
   }
 
   public void updateOdometry() {
@@ -249,6 +264,7 @@ public class DriveSubsystem extends SubsystemBase{
   }
   
   public SwerveModulePosition[] getModulePositions() {
+    //Returns 
     return new SwerveModulePosition[] {
       frontLeft.getPosition(),
       frontRight.getPosition(),
