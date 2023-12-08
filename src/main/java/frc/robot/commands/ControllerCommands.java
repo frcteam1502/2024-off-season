@@ -6,9 +6,20 @@ import frc.robot.PowerManagement.AdaptiveSpeedController;
 import frc.robot.PowerManagement.IBrownOutDetector;
 import frc.robot.subsystems.DriveSubsystem;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 final class DriveConstants {
-  public static final double MAX_TELEOP_SPEED = .75; //Range 0 to 1
+  public static final double MAX_SPEED_METERS_PER_SECOND = 4.6;
+  public static final double MAX_TELEOP_SPEED = 1; //Range 0 to 1
   public static final double MAX_FINESSE_SPEED = .3;
+
+  public static final double MAX_ROTATION_RADIANS_PER_SECOND = 11; //w = ((max_speed)/(2*pi*robot_radius))*(2*pi)
+  public static final double MAX_TELEOP_ROTATION = 1;
+  public static final double MAX_FINESSE_ROTATION = .3;
+
+  public static final boolean ADAPTIVE_LIMITING_ENABLED = false;
 }
 
 public class ControllerCommands extends CommandBase {
@@ -26,13 +37,43 @@ public class ControllerCommands extends CommandBase {
 
   @Override
   public void execute() {
-    var speedCommand = speedController.GetSpeedCommand(
-      Driver.getLeftY(), // Forward
-      Driver.getLeftX(), // Strafe
-      Driver.getRightX(), // Rotate
-      Driver.XboxButtons.LeftBumper.getAsBoolean()); // brake
-  
-    drive.drive(-speedCommand.forwardSpeed, -speedCommand.strafeSpeed, -speedCommand.rotationSpeed, true);
+    double teleopSpeedGain;
+    double teleopRotationGain;
+
+    if(Driver.XboxButtons.LeftBumper.getAsBoolean()){
+      teleopSpeedGain = DriveConstants.MAX_FINESSE_SPEED;
+      teleopRotationGain = DriveConstants.MAX_FINESSE_ROTATION;
+    }else{
+      teleopSpeedGain = DriveConstants.MAX_TELEOP_SPEED;
+      teleopRotationGain = DriveConstants.MAX_TELEOP_ROTATION;
+    }
+    //Need to convert joystick input (-1 to 1) into m/s!!! 100% == MAX Attainable Speed
+    double forwardSpeed = ((MathUtil.applyDeadband(Driver.getLeftY(), 0.1)) * teleopSpeedGain) *
+        DriveConstants.MAX_SPEED_METERS_PER_SECOND;
+
+    double strafeSpeed = ((MathUtil.applyDeadband(Driver.getLeftX(), 0.1)) * teleopSpeedGain) *
+        DriveConstants.MAX_SPEED_METERS_PER_SECOND;
+
+    //Need to convert joystick input (-1 to 1) into m/s!!! 100% == MAX Attainable Rotation
+    double rotationSpeed = ((MathUtil.applyDeadband(Driver.getRightX(), 0.1)) * teleopRotationGain) *
+    DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND;
+
+    SmartDashboard.putNumber("Forward In", forwardSpeed);
+    SmartDashboard.putNumber("Strafe In", strafeSpeed);
+    SmartDashboard.putNumber("Rotation In", rotationSpeed);
+
+    if(DriveConstants.ADAPTIVE_LIMITING_ENABLED){
+      var speedCommand = speedController.GetSpeedCommand(
+        forwardSpeed, // Forward
+        strafeSpeed, // Strafe
+        rotationSpeed, // Rotate
+        Driver.XboxButtons.LeftBumper.getAsBoolean()); // brake
+    
+      drive.drive(-speedCommand.forwardSpeed, -speedCommand.strafeSpeed, -speedCommand.rotationSpeed, true);
+    }else{
+      drive.drive(-forwardSpeed, -strafeSpeed, -rotationSpeed, false);
+    }
+
   }
 
   @Override

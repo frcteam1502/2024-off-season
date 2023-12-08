@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.Pigeon2;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -122,8 +124,10 @@ public class DriveSubsystem extends SubsystemBase{
   public boolean isTurning = false;
   public double targetAngle = 0.0;
   public double turnCommand = 0.0;
-  public double forwardCommand = 0;
-  public double strafeCommand = 0;
+  public double fieldXCommand = 0;
+  public double fieldYCommand = 0;
+
+  ChassisSpeeds speedCommands = new ChassisSpeeds(0, 0, 0);
 
   private final SwerveModule frontLeft = new SwerveModule(
     Motors.DRIVE_FRONT_LEFT, Motors.ANGLE_FRONT_LEFT, 
@@ -175,23 +179,53 @@ public class DriveSubsystem extends SubsystemBase{
       targetAngle = gyro.getYaw();
     }
   }
+
+  private void updateDashboard(){
+    //Field Oriented inputs
+    SmartDashboard.putNumber("Field Oriented X Command (Forward)", fieldXCommand);
+    SmartDashboard.putNumber("Field Oriented Y Command (Forward)", fieldYCommand);
+    SmartDashboard.putNumber("Robot Relative Rotation Command", speedCommands.omegaRadiansPerSecond);
+
+    //Robot Relative inputs
+    SmartDashboard.putNumber("Robot Relative vX Speed Command", speedCommands.vxMetersPerSecond);
+    SmartDashboard.putNumber("Robot Relative vY Speed Command", speedCommands.vyMetersPerSecond);
+
+    //Swerve Module info
+    SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
+    SmartDashboard.putNumber("Front Left Angle Command", frontLeft.getCommandedAngle());
+    SmartDashboard.putNumber("Front Left Measured Speed", frontLeft.getModuleVelocity());
+
+    SmartDashboard.putNumber("Front Right Speed Command", frontRight.getCommandedSpeed());
+    SmartDashboard.putNumber("Front Right Angle Command", frontRight.getCommandedAngle());
+    SmartDashboard.putNumber("Front Right Measured Speed", frontRight.getModuleVelocity());
+
+    SmartDashboard.putNumber("Rear Right Speed Command", backRight.getCommandedSpeed());
+    SmartDashboard.putNumber("Rear Right Angle Command", backRight.getCommandedAngle());
+    SmartDashboard.putNumber("Rear Right Measured Speed", backRight.getModuleVelocity());
+
+    SmartDashboard.putNumber("Rear Left Speed Command", backLeft.getCommandedSpeed());
+    SmartDashboard.putNumber("Rear Left Angle Command", backLeft.getCommandedAngle());
+    SmartDashboard.putNumber("Rear Left Measured Speed", backLeft.getModuleVelocity());
+  }
   
   @Override
   public void periodic() {
     checkInitialAngle();
     updateOdometry();
+    updateDashboard();
   }
   
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     checkInitialAngle();
-    ChassisSpeeds speedCommands = new ChassisSpeeds(0, 0, 0);
 
     if (GameState.isTeleop()) {
       if (Math.abs(rot) > 0) {
+        //Driver is commanding rotation, 
         isTurning = true;
         targetAngle = gyro.getYaw();
       } 
       else if (rot == 0 && isTurning) {
+        //Driver stopped commanding a turn
         isTurning = false;
       }
 
@@ -201,10 +235,11 @@ public class DriveSubsystem extends SubsystemBase{
       else { 
         turnCommand = (targetAngle - gyro.getYaw()) * DriveConstants.GO_STRAIGHT_GAIN;
       }
-
-      forwardCommand = xSpeed;
-      strafeCommand = ySpeed;
+      
     }
+    //Set Dashboard variables
+    fieldXCommand = xSpeed;
+    fieldYCommand = ySpeed;
 
     if(fieldRelative){
       speedCommands = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnCommand, getGyroRotation2d());
@@ -295,21 +330,21 @@ public class DriveSubsystem extends SubsystemBase{
     return odometry.getEstimatedPosition();
   }
 
-  public double getVelocity() {
+  /*public double getVelocity() {
     return Math.sqrt(
       Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vxMetersPerSecond, 2) + 
       Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vyMetersPerSecond, 2)
     );
-  }
+  }*/
 
-  public Rotation2d getHeading() {
+  /*public Rotation2d getHeading() {
     return new Rotation2d(
       Math.atan2(
         Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vyMetersPerSecond, 2), 
         Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vxMetersPerSecond, 2)
       )
     );
-  }
+  }*/
 
   public double getRoll() {
     return gyro.getRoll() - pitchOffset;

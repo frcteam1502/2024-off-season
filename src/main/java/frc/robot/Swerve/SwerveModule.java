@@ -33,7 +33,7 @@ final class ModuleConstants {
   public static final double MODULE_DRIVE_PID_CONTROLLER_F = 1.0;
   
   public static final double CLOSED_LOOP_RAMP_RATE = .25;
-  public static final int SMART_CURRENT_LIMIT = 40;
+  public static final int SMART_CURRENT_LIMIT = 80;
 
   /*
   public static final double MAX_METERS_PER_SECOND = 4.4; //5600 * DRIVE_ENCODER_MPS_PER_REV;
@@ -55,6 +55,9 @@ public class SwerveModule {
 
   private final SparkMaxPIDController drivePIDController;
   private final PIDController turningPIDController = new PIDController(ModuleConstants.MODULE_TURN_PID_CONTROLLER_P, ModuleConstants.MODULE_TURN_PID_CONTROLLER_I, ModuleConstants.MODULE_TURN_PID_CONTROLLER_D);
+
+  private double commandedSpeed;
+  private double commandedAngle;
 
   public SwerveModule(CANSparkMax driveMotor, CANSparkMax turnMotor, CANCoder absEncoder, double absOffset, boolean CANCoderDirection) {
     this.driveMotor = driveMotor;
@@ -122,6 +125,18 @@ public class SwerveModule {
     return Units.degreesToRadians(absEncoder.getAbsolutePosition());
   }
 
+  public double getCommandedSpeed(){
+    return commandedSpeed;
+  }
+
+  public double getModuleVelocity(){
+    return driveEncoder.getVelocity();
+  }
+
+  public double getCommandedAngle(){
+    return commandedAngle;
+  }
+
   /**
    * Sets the desired state for the module.
    *
@@ -134,7 +149,10 @@ public class SwerveModule {
     // Calculate the turning motor output from the turning PID controller.
     final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(true), state.angle.getRadians());
 
-    //driveMotor.setVoltage(driveOutput + driveFeedforward);
+    //Set SmartDashboard variables
+    commandedSpeed = state.speedMetersPerSecond;
+    commandedAngle = turnOutput;
+
     drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
     turningMotor.setVoltage(turnOutput);
   }
