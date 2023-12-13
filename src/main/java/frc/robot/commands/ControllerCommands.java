@@ -16,8 +16,8 @@ final class DriveConstants {
   public static final double MAX_FINESSE_SPEED = .3;
 
   public static final double MAX_ROTATION_RADIANS_PER_SECOND = 11; //w = ((max_speed)/(2*pi*robot_radius))*(2*pi)
-  public static final double MAX_TELEOP_ROTATION = 1;
-  public static final double MAX_FINESSE_ROTATION = .3;
+  public static final double MAX_TELEOP_ROTATION = .3;
+  public static final double MAX_FINESSE_ROTATION = .1;
 
   public static final boolean ADAPTIVE_LIMITING_ENABLED = false;
 }
@@ -25,6 +25,8 @@ final class DriveConstants {
 public class ControllerCommands extends CommandBase {
   private final DriveSubsystem drive;
   private final AdaptiveSpeedController speedController;
+
+  private SlewRateLimiter turnLimiter = new SlewRateLimiter(5);
   
   public ControllerCommands(DriveSubsystem drive, IBrownOutDetector brownOutDetector) {
     this.drive = drive;
@@ -55,8 +57,8 @@ public class ControllerCommands extends CommandBase {
         DriveConstants.MAX_SPEED_METERS_PER_SECOND;
 
     //Need to convert joystick input (-1 to 1) into m/s!!! 100% == MAX Attainable Rotation
-    double rotationSpeed = ((MathUtil.applyDeadband(Driver.getRightX(), 0.1)) * teleopRotationGain) *
-    DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND;
+    double rotationSpeed = turnLimiter.calculate(((MathUtil.applyDeadband(Driver.getRightX(), 0.1)) * teleopRotationGain) *
+    DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND);
 
     SmartDashboard.putNumber("Forward In", forwardSpeed);
     SmartDashboard.putNumber("Strafe In", strafeSpeed);
@@ -71,7 +73,7 @@ public class ControllerCommands extends CommandBase {
     
       drive.drive(-speedCommand.forwardSpeed, -speedCommand.strafeSpeed, -speedCommand.rotationSpeed, true);
     }else{
-      drive.drive(-forwardSpeed, -strafeSpeed, -rotationSpeed, false);
+      drive.drive(-forwardSpeed, -strafeSpeed, -rotationSpeed, true);
     }
 
   }

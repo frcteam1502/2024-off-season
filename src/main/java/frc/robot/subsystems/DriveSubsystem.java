@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import frc.robot.Logger;
+
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.Pigeon2;
 
@@ -98,7 +100,7 @@ final class DriveConstants {
       public static final double MAX_ROTATION_RADIANS_PER_SECOND_PER_SECOND = Math.PI;
       */
 
-      public static final double GO_STRAIGHT_GAIN = 0.02;
+      public static final double GO_STRAIGHT_GAIN = 0.01;
 }
 
 
@@ -172,6 +174,23 @@ public class DriveSubsystem extends SubsystemBase{
 
     reset();
     ConfigMotorDirections();
+
+    Logger.RegisterCanSparkMax("FL Drive", Motors.DRIVE_FRONT_LEFT);
+    Logger.RegisterCanSparkMax("FR Drive", Motors.DRIVE_FRONT_RIGHT);
+    Logger.RegisterCanSparkMax("RL Drive", Motors.DRIVE_BACK_LEFT);
+    Logger.RegisterCanSparkMax("FR Drive", Motors.DRIVE_BACK_RIGHT);
+
+    Logger.RegisterCanSparkMax("FL Turn", Motors.ANGLE_FRONT_LEFT);
+    Logger.RegisterCanSparkMax("FR Turn", Motors.ANGLE_FRONT_RIGHT);
+    Logger.RegisterCanSparkMax("RL Turn", Motors.ANGLE_BACK_LEFT);
+    Logger.RegisterCanSparkMax("FR Turn", Motors.ANGLE_BACK_RIGHT);
+
+    Logger.RegisterPigeon(Gyro.gyro);
+
+    Logger.RegisterCanCoder("FL Abs Position", CANCoders.FRONT_LEFT_CAN_CODER);
+    Logger.RegisterCanCoder("FR Abs Position", CANCoders.FRONT_RIGHT_CAN_CODER);
+    Logger.RegisterCanCoder("RL Abs Position", CANCoders.BACK_LEFT_CAN_CODER);
+    Logger.RegisterCanCoder("RR Abs Position", CANCoders.BACK_RIGHT_CAN_CODER);
   }
 
   private void checkInitialAngle() {

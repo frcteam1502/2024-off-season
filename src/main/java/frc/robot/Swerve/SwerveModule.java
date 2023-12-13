@@ -32,8 +32,8 @@ final class ModuleConstants {
   public static final double MODULE_DRIVE_PID_CONTROLLER_D = 0;
   public static final double MODULE_DRIVE_PID_CONTROLLER_F = 1.0;
   
-  public static final double CLOSED_LOOP_RAMP_RATE = .25;
-  public static final int SMART_CURRENT_LIMIT = 80;
+  public static final double CLOSED_LOOP_RAMP_RATE = .5;
+  public static final int SMART_CURRENT_LIMIT = 30;
 
   /*
   public static final double MAX_METERS_PER_SECOND = 4.4; //5600 * DRIVE_ENCODER_MPS_PER_REV;

@@ -4,7 +4,12 @@
 
 package frc.robot;
 
+import frc.robot.Logger;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.testmode.swerve.AbsoluteEncoderAlignment;
@@ -18,16 +23,72 @@ import frc.testmode.swerve.AbsoluteEncoderAlignment;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+  private Logger logger = new Logger();
 
+  private String[] pdhRealChannelNames = {
+    null, //"0"
+    null, //"1"
+    null, //"2"
+    null, //"3"
+    null, //"4"  
+    null, //"5"
+    null, //"6"
+    null, //"7"
+    null, //"8"
+    null, //"9"
+    null, //"10"
+    null, //"11"
+    null, //"12"
+    null, //"13"
+    null, //"14"
+    null, //"15"
+    null, //"16"
+    null, //"17"
+    null, //"18"
+    null, //"19"
+    null, //"20"
+    null, //"21"
+    null, //"22"
+    null, //"23"
+};
+
+private String[] pneumaticNames = {
+  null, //"0",
+  null, //"1",
+  null, //"2"
+  null, //"3"
+  null, //"4",
+  null, //"5",
+  null, //"6",
+  null, //"7",
+  null, //"8",
+  null, //"9",
+  null, //"10",
+  null, //"11",
+  null, //"12",
+  null, //"13",
+  null, //"14",
+  null, //"15",
+};
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+    RobotController.setBrownoutVoltage(3);
+    //Register PDP and PH Logger items
+    //Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
+    //Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
+    
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    //Register Logger items
+    //Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
+    //Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
+    logger.start();
   }
 
   /**
