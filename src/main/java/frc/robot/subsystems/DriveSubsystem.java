@@ -178,12 +178,12 @@ public class DriveSubsystem extends SubsystemBase{
     Logger.RegisterCanSparkMax("FL Drive", Motors.DRIVE_FRONT_LEFT);
     Logger.RegisterCanSparkMax("FR Drive", Motors.DRIVE_FRONT_RIGHT);
     Logger.RegisterCanSparkMax("RL Drive", Motors.DRIVE_BACK_LEFT);
-    Logger.RegisterCanSparkMax("FR Drive", Motors.DRIVE_BACK_RIGHT);
+    Logger.RegisterCanSparkMax("RR Drive", Motors.DRIVE_BACK_RIGHT);
 
     Logger.RegisterCanSparkMax("FL Turn", Motors.ANGLE_FRONT_LEFT);
     Logger.RegisterCanSparkMax("FR Turn", Motors.ANGLE_FRONT_RIGHT);
     Logger.RegisterCanSparkMax("RL Turn", Motors.ANGLE_BACK_LEFT);
-    Logger.RegisterCanSparkMax("FR Turn", Motors.ANGLE_BACK_RIGHT);
+    Logger.RegisterCanSparkMax("RR Turn", Motors.ANGLE_BACK_RIGHT);
 
     Logger.RegisterPigeon(Gyro.gyro);
 
@@ -191,6 +191,11 @@ public class DriveSubsystem extends SubsystemBase{
     Logger.RegisterCanCoder("FR Abs Position", CANCoders.FRONT_RIGHT_CAN_CODER);
     Logger.RegisterCanCoder("RL Abs Position", CANCoders.BACK_LEFT_CAN_CODER);
     Logger.RegisterCanCoder("RR Abs Position", CANCoders.BACK_RIGHT_CAN_CODER);
+
+    Logger.RegisterSensor("FL Drive Speed", ()->frontLeft.getVelocity());
+    Logger.RegisterSensor("FR Drive Speed", ()->frontRight.getVelocity());
+    Logger.RegisterSensor("RL Drive Speed", ()->backLeft.getVelocity());
+    Logger.RegisterSensor("RR Drive Speed", ()->backRight.getVelocity());
   }
 
   private void checkInitialAngle() {

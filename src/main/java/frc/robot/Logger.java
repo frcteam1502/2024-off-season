@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Robot;
 
 public class Logger implements Runnable {
     private final double VOLTS_PER_PSI = 1.931/100; //2.431V at 100psi
@@ -53,7 +52,7 @@ public class Logger implements Runnable {
     private NetworkTable stickyTable;
     private NetworkTable sensorTable;
     private NetworkTable canStatusTable;
-    //private static NetworkTable taskTimings;
+    private static NetworkTable taskTimings;
 
     private static boolean faultSet;
     private static boolean sfaultSet;
@@ -79,7 +78,7 @@ public class Logger implements Runnable {
 
         // Set the scheduler to log Shuffleboard events for command initialize,
         // interrupt, finish
-        /*CommandScheduler.getInstance()
+        CommandScheduler.getInstance()
                 .onCommandInitialize(
                         command -> Shuffleboard.addEventMarker(
                                 "Command initialized", command.getName(), EventImportance.kNormal));
@@ -90,7 +89,7 @@ public class Logger implements Runnable {
         CommandScheduler.getInstance()
                 .onCommandFinish(
                         command -> Shuffleboard.addEventMarker(
-                                "Command finished", command.getName(), EventImportance.kNormal));*/
+                                "Command finished", command.getName(), EventImportance.kNormal));
     }
 
     public void start() {
@@ -127,7 +126,7 @@ public class Logger implements Runnable {
     }
 
     public static void RegisterLoopTimes(Robot robot) {
-        //new LoopTimeLogger(robot, taskTimings);
+        new LoopTimeLogger(robot, taskTimings);
     }
 
     public static void RegisterPigeon(BasePigeon pigeon) {
