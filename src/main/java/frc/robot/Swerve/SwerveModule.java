@@ -143,17 +143,24 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    // Optimize the reference state to avoid spinning further than 90 degrees
-    SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsPositionZeroed(true)));
-
-    // Calculate the turning motor output from the turning PID controller.
-    final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(true), state.angle.getRadians());
-
+    
     //Set SmartDashboard variables
-    commandedSpeed = state.speedMetersPerSecond;
-    commandedAngle = turnOutput;
+    commandedSpeed = desiredState.speedMetersPerSecond;
+    commandedAngle = desiredState.angle.getDegrees();
 
-    drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
-    turningMotor.setVoltage(turnOutput);
+    if(Math.abs(desiredState.speedMetersPerSecond) < .2){
+      driveMotor.set(0);
+      turningMotor.set(0);
+      return;
+    }else{
+      // Optimize the reference state to avoid spinning further than 90 degrees
+      SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsPositionZeroed(true)));
+
+      // Calculate the turning motor output from the turning PID controller.
+      final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(true), state.angle.getRadians());
+
+      drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+      turningMotor.setVoltage(turnOutput);
+    }
   }
 }

@@ -72,10 +72,10 @@ final class DriveConstants {
   public static final boolean FrontRightDriveMotorReversed = false;
   public static final boolean BackRightDriveMotorReversed = false;
 
-  public static final CANSparkMax.IdleMode FrontLeftDriveMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode BackLeftDriveMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode FrontRightDriveMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode BackRightDriveMotorBrake = IdleMode.kBrake;
+  public static final CANSparkMax.IdleMode FrontLeftDriveMotorBrake = IdleMode.kCoast;
+  public static final CANSparkMax.IdleMode BackLeftDriveMotorBrake = IdleMode.kCoast;
+  public static final CANSparkMax.IdleMode FrontRightDriveMotorBrake = IdleMode.kCoast;
+  public static final CANSparkMax.IdleMode BackRightDriveMotorBrake = IdleMode.kCoast;
 
   //Wheel Base
   public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
