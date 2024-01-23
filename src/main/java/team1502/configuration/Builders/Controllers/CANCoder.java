@@ -33,11 +33,15 @@ public class CANCoder extends Controller /*Encoder /* implements ICAN */{
     public Builder createBuilder() {
         return new CANCoder((Function<CANCoder, Builder>)buildFunction);
     }
-
+    
     public boolean Direction() {
         var result = getBoolean(ISREVERSED);
         return result == null ? false : result;
     }
+    /**
+      False (default) means positive rotation occurs when magnet
+      is spun counter-clockwise when observer is facing the LED side of CANCoder.
+   */
     public CANCoder Direction(boolean value) {
         setValue(ISREVERSED, value);
         return this;

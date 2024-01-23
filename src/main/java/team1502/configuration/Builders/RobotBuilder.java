@@ -6,15 +6,11 @@ import java.util.function.Function;
 import team1502.configuration.Builders.Controllers.GyroSensor;
 import team1502.configuration.Builders.Controllers.MotorController;
 import team1502.configuration.CAN.CanMap;
-import team1502.configuration.CAN.DeviceType;
-import team1502.configuration.Parts.Part;
 import team1502.configuration.Factory.PartFactory;
 
 public class RobotBuilder implements IBuild /*extends Builder*/{
     private PartFactory _partFactory;
-    //private HashMap<String, Part> _partMap = new HashMap<>(); 
     private HashMap<String, Builder> _buildMap = new HashMap<>(); // built parts wrapped in builder
-    //private HashMap<String, Function<String,Object>> _valueMap = new HashMap<>(); 
     
     private CanMap _canMap = new CanMap();
     

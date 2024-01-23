@@ -24,22 +24,17 @@ public class Gyro extends Builder {
 
     public static final String ISREVERSED = "isReversed";
 
-        //Define
-        public Gyro(String name, Function<Gyro, Builder> fn) {
-            super("GyroSensor", name, null);
-            buildFunction = fn;
-        }
-    
-        //Build
-        public Gyro(Function<Gyro, Builder> fn) {
-            super("GyroSensor");
-            buildFunction = fn;
-        }
-    
-    // public GyroPart(String name, Manufacturer mfr) {
-    //     super(name);
-    //     this.CanInfo(new CanInfo(DeviceType.GyroSensor, mfr));
-    // }
+    //Define
+    public Gyro(String name, Function<Gyro, Builder> fn) {
+        super("GyroSensor", name, null);
+        buildFunction = fn;
+    }
+
+    //Build
+    public Gyro(Function<Gyro, Builder> fn) {
+        super("GyroSensor");
+        buildFunction = fn;
+    }
 
     public Gyro Reversed(boolean reversed) {
         setValue(ISREVERSED, reversed);
