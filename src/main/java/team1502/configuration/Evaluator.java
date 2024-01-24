@@ -30,7 +30,7 @@ public class Evaluator {
         return result;
     }
     // Ad hoc evaluate
-    public Object Eval(Function<Evaluator,Object> fn) {
+    public Object Eval(Function<Evaluator,? extends Object> fn) {
         return fn.apply(this);
     }
     
@@ -59,15 +59,15 @@ public class Evaluator {
         return _configuration.getInstalled(partName);
     }
 
-    private <T extends Builder> Object getValue(String partName, T builder, Function<T, Object> fn) {
+    private <T extends Builder> Object getValue(String partName, T builder, Function<T, ? extends Object> fn) {
         var susBuilder = getInstalled(partName);
         return susBuilder.evalWith(fn, builder);
     
     }
-    private <T extends Builder> Object getValue(String partName, Function<T, Object> fn) {
-        var builder = getInstalled(partName);
-        return fn.apply((T)builder);
-    }
+    // private <T extends Builder> Object getValue(String partName, Function<T, ? extends Object> fn) {
+    //     var builder = getInstalled(partName);
+    //     return fn.apply((T)builder);
+    // }
 
     public Object Part(String partName, Function<Builder, Object> fn) {
         return getValue(partName, new Builder(), fn);   
@@ -85,8 +85,8 @@ public class Evaluator {
         return getValue(partName, new SwerveModule(), fn);   
     }
 
-    public Object SwerveDrive(Function<SwerveDrive, Object> fn) {
-        return getValue("SwerveDrive", new SwerveDrive(), fn);   
+    public <T extends Object> T SwerveDrive(Function<SwerveDrive, T> fn) {
+        return (T)getValue("SwerveDrive", new SwerveDrive(), fn);   
     }
 
 }

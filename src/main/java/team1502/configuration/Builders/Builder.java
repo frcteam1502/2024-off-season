@@ -164,13 +164,13 @@ public class Builder {
     }
 
     // (intended) empty builder (e.g., of another subclass) to do the work
-    protected <T extends Builder> Object eval(Function<T, Object> fn, Part part) {
+    protected <T extends Builder> Object eval(Function<T, ? extends Object> fn, Part part) {
         _part = part;
         return fn.apply((T)this);
     }
 
     // use another builder (of the right subclass) to apply
-    public <T extends Builder> Object evalWith(Function<T, Object> fn, T builder) {
+    public <T extends Builder> Object evalWith(Function<T, ? extends Object> fn, T builder) {
         return builder.eval(fn, _part);
     }
 
@@ -356,7 +356,6 @@ public class Builder {
     
     // EVAL 
 
-
     public Object getValue(String valueName, Object defaultValue) {
         var result = getValue(valueName);
         return result != null ? result : defaultValue;
@@ -364,7 +363,7 @@ public class Builder {
     public Object getValue(String valueName) {
         return _part.getValue(valueName);
     }
-
+    
     public Boolean getBoolean(String valueName) {
         return (Boolean)getValue(valueName);
     }
@@ -373,21 +372,27 @@ public class Builder {
         return (Double)getValue(valueName);
     }
 
+    public Integer getInt(String valueName) {
+        return (Integer)getValue(valueName);
+    }
+
     public Double getDoubleFromInt(String valueName) {
         return ((Integer)getValue(valueName)).doubleValue();
     }
 
+    // Parts and Pieces
     public Part getPart() {
         return _part;
-    }
-    public List<Part> getPieces() {
-        return _part.getPieces();
     }
     public Part getPart(String valueName) {
         return (Part)getValue(valueName);
     }
-
     
+    public List<Part> getPieces() {
+        return _part.getPieces();
+    }
+
+    // CAN
     public int getCanNumber() {
         return _part.getCanId();
     }

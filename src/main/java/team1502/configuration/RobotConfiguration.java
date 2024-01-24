@@ -3,25 +3,26 @@ package team1502.configuration;
 import java.util.function.Function;
 
 import team1502.configuration.Builders.RobotBuilder;
+import team1502.configuration.Builders.Controllers.GyroSensor;
 import team1502.configuration.CAN.CanMap;
 import team1502.configuration.Factory.PartFactory;
 
-public class Robot {
+public class RobotConfiguration {
 
     public String name;
     private PartFactory _partFactory = new PartFactory();
     private RobotBuilder _robotBuilder;
     private Evaluator _evaluator;
     
-    public static Robot Create(String name, Function<Robot, Robot> fn) {
-        var robot = new Robot();
+    public static RobotConfiguration Create(String name, Function<RobotConfiguration, RobotConfiguration> fn) {
+        var robot = new RobotConfiguration();
         robot.name = name;
         return fn.apply(robot);
 
     }
 
-    static Robot Create(Function<Robot, Robot> fn) {
-        var robot = new Robot();
+    static RobotConfiguration Create(Function<RobotConfiguration, RobotConfiguration> fn) {
+        var robot = new RobotConfiguration();
         return fn.apply(robot);
 
     }
@@ -42,12 +43,12 @@ public class Robot {
 
     public CanMap getCanMap() {return _robotBuilder.getCanMap();}
 
-    public Robot Parts(Function<PartFactory, PartFactory> fn) {
+    public RobotConfiguration Parts(Function<PartFactory, PartFactory> fn) {
         fn.apply(_partFactory);
         return this;
     }
     
-    public Robot Build(Function<RobotBuilder, RobotBuilder> fn) {
+    public RobotConfiguration Build(Function<RobotBuilder, RobotBuilder> fn) {
         fn.apply(getBuilder());
         return this;
     }
@@ -56,7 +57,7 @@ public class Robot {
         return getEvaluator();
     }
 
-    public Robot Values(Function<Evaluator, Evaluator> fn) {
+    public RobotConfiguration Values(Function<Evaluator, Evaluator> fn) {
         fn.apply(getEvaluator());
         return this;
     }
@@ -69,4 +70,10 @@ public class Robot {
         return Values().getValue(valueName, partName);
     }
 
+    public <T> T Eval(Function<Evaluator,T> fn) {
+        return (T)Values().Eval(fn);
+    }
+
+
+    public GyroSensor GyroSensor(String name) {return (GyroSensor)getValue(name);}
 }
