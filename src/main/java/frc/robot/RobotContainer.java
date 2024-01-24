@@ -10,6 +10,7 @@ import frc.robot.commands.ControllerCommands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import team1502.configuration.configurations.RobotConfigurations;
+import team1502.injection.RobotFactory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -24,9 +25,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem driveSubsystem;
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
-  
+
+   /* sample
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  /* sample
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -36,6 +37,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     var config = RobotConfigurations.getConfiguration("1502");
+    RobotFactory factory = RobotFactory.Create(config);
+
     driveSubsystem = new DriveSubsystem(config);
     // Configure the trigger bindings
     configureBindings();
@@ -69,8 +72,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  public Command getAutonomousCommand() { return null;
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    //return Autos.exampleAuto(m_exampleSubsystem);
   }
 }

@@ -16,7 +16,9 @@ import frc.robot.GameState;
 import frc.robot.Swerve.SwerveModules;
 
 import team1502.configuration.RobotConfiguration;
+import team1502.configuration.annotations.SubsystemInfo;
 
+@SubsystemInfo(disabled = true)
 public class DriveSubsystem extends SubsystemBase{
   
   private boolean isTurning = false;

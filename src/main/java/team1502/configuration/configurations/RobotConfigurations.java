@@ -25,11 +25,12 @@ public final class RobotConfigurations {
                 )
                 .Motor("NEO", m -> m
                     .MotorType(CANSparkMaxLowLevel.MotorType.kBrushless)
-                    .FreeSpeedRPM(5_820.0)
-                    .Value("empiricalFreeSpeed", 5_676.0) // how to choose best vaule?
+                    .FreeSpeedRPM(5_820.0) // from MK4i docs, see data sheet for empirical values
                     .Note("NAME", "NEO")
                     .Note("VERSION", "V1.0/V1.1")
                     .Note("gearing", "8mm bore pinion gears")
+                    .Note("DATA SHEET", "https://www.revrobotics.com/content/docs/REV-21-1650-DS.pdf")
+                    .Value("empiricalFreeSpeed", 5_676.0) // how to choose best vaule?
                 )
                 .SwerveModule(sm -> sm
                     .Encoder(Manufacturer.REVRobotics, cc -> cc
